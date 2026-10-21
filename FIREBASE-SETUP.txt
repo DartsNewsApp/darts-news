@@ -1,0 +1,29 @@
+DARTS NEWS — SETTING UP ONLINE PLAY (one time, about 10 minutes, free)
+
+1. Go to https://console.firebase.google.com and sign in with a Google account.
+2. Click "Create a project" (or "Add project"). Name it darts-news.
+   Turn OFF Google Analytics (not needed). Click Create project, then Continue.
+3. In the left menu open Build > Realtime Database. Click "Create Database".
+   Location: Belgium (europe-west1). Choose "Start in locked mode". Click Enable.
+4. Open the "Rules" tab, delete everything there and paste this, then click Publish:
+
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": "$code.matches(/^DN-[0-9]{4}$/)",
+        ".write": "$code.matches(/^DN-[0-9]{4}$/)"
+      }
+    }
+  }
+}
+
+5. Open the "Data" tab. At the top is your database address, for example:
+   https://darts-news-1a2b3-default-rtdb.europe-west1.firebasedatabase.app
+   Copy it.
+6. Send that address to Claude, so it can be built into the app for every player.
+   (To try it straight away on your own phone: open the app > Settings > Online play,
+   paste the address and tap Save. Your friend would need to do the same until
+   the address is built in.)
+
+The free plan allows about 100 people playing at the same time, which is plenty to start.
