@@ -15,6 +15,7 @@
 <script>try{var _c=JSON.parse(localStorage.getItem("dn_cfg")||"{}"),_t=_c.theme||"dark";if(_t=="auto")_t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",_t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
 <script>try{var _c=JSON.parse(localStorage.getItem("dn_cfg")||"{}"),_t=_c.theme||"dark";if(_t=="auto")_t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",_t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
 <script>try{var _c=JSON.parse(localStorage.getItem("dn_cfg")||"{}"),_t=_c.theme||"dark";if(_t=="auto")_t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",_t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
+<script>try{var _c=JSON.parse(localStorage.getItem("dn_cfg")||"{}"),_t=_c.theme||"dark";if(_t=="auto")_t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.setAttribute("data-theme",_t)}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Karla:wght@400;600;700&display=swap">
 <style>
 :root{--bg:#eef1ec;--panel:#fff;--ink:#1d2622;--mute:#66736c;--line:#d3dad4;--red:#c4372f;--green:#217a4d;--act:#e6f2ea;--key:#e4e9e5;--pri:#d0101c;--pri2:#ef2430;--prit:#c0101b;--prib:rgba(208,16,28,.09);
@@ -796,8 +797,8 @@ textarea.name{width:100%;padding:11px;border:1.5px solid var(--line);border-radi
   </div>
  </div>
  <div class="card"><h2 class="sh">Online play</h2>
-  <p class="small" style="margin-top:0">The online server address. The app owner fills this in once; players don't need to touch it.</p>
-  <div class="nrow"><input class="name" id="onlUrl" placeholder="https://….firebasedatabase.app" aria-label="Online server address" autocomplete="off" spellcheck="false"><button id="onlUrlS" class="addb">Save</button></div>
+  <p class="small" style="margin-top:0">Online play and live events use the Darts News server. Leave this empty; it's only for testing a different server.</p>
+  <div class="nrow"><input class="name" id="onlUrl" placeholder="Darts News server (built in)" aria-label="Online server address" autocomplete="off" spellcheck="false"><button id="onlUrlS" class="addb">Save</button></div>
   <p class="small" id="onlUrlT" style="margin:8px 0 0"></p>
  </div>
  <div class="card"><h2 class="sh">Saved players</h2><div id="setPl"></div>
@@ -2600,10 +2601,10 @@ function camSync(){$("camBtn").classList.toggle("hide",!cfg.cam);if(!cfg.cam&&CA
 
 
 /* ---------- online play ---------- */
-var ONL_URL="";
+var ONL_URL="https://darts-news-default-rtdb.europe-west1.firebasedatabase.app";
 var ONL={code:null,me:-1,tree:null,es:null,hb:0,heard:-1,seen:{},rx:{},q:[],qt:0,stash:null,mode:"menu",saved:false,lastSeen:0,oppS:null,oppAt:0,first:true,legShown:-1};
 var ORX=[["👍","Good darts"],["🎯","Shot!"],["😅","Unlucky"],["👋","Hello"]];
-function onlBase(){return String(cfg.onlUrl||ONL_URL||"").trim().replace(/\/+$/,"")}
+function onlBase(){if(!cfg.onlUrl&&window.claude&&claude.use)return "";return String(cfg.onlUrl||ONL_URL||"").trim().replace(/\/+$/,"")}
 function onlInClaude(){return !!(window.claude&&claude.use)&&!onlBase()}
 function fbReq(path,method,body){
   return fetch(onlBase()+path+".json",{method:method||"GET",headers:body!==undefined?{"Content-Type":"application/json"}:{},body:body!==undefined?JSON.stringify(body):undefined}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()});
@@ -2835,11 +2836,12 @@ function onlQR(box){
   QRL.then(draw).catch(function(){box.remove()});
 }
 $("hOnl").onclick=function(){openOnline()};
-$("onlUrlS").onclick=function(){
+$("onlUrlS").textContent="Save & test";$("onlUrlS").onclick=function(){
   var v=$("onlUrl").value.trim().replace(/\/+$/,"");
   if(v&&!/^https:\/\/[a-z0-9.-]+$/i.test(v)){$("onlUrlT").textContent="That doesn't look like a server address. It should start with https:// and have nothing after the name.";return}
-  cfg.onlUrl=v;lsSet("dn_cfg",cfg);$("onlUrlT").textContent=v?"Checking…":"Cleared.";
-  if(v)fbReq("/rooms/DN-0000/cfg").then(function(){$("onlUrlT").textContent="Connected. Online play is ready."}).catch(function(){$("onlUrlT").textContent="Saved, but the server didn't answer. Check the address and the database rules."});
+  cfg.onlUrl=v;lsSet("dn_cfg",cfg);$("onlUrlT").textContent="Checking…";
+  if(!onlBase()){$("onlUrlT").textContent="Online play works in the website version of the app.";return}
+  fbReq("/rooms/DN-0000/cfg").then(function(){$("onlUrlT").textContent="Connected. Online play is ready."}).catch(function(){$("onlUrlT").textContent="Saved, but the server didn't answer. Check the address and the database rules."});
 };
 
 

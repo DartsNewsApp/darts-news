@@ -36,7 +36,7 @@ DARTS NEWS — SETTING UP ONLINE PLAY (one time, about 10 minutes, free)
 5. Open the "Data" tab. At the top is your database address, for example:
    https://darts-news-1a2b3-default-rtdb.europe-west1.firebasedatabase.app
    Copy it.
-6. Send that address to Claude, so it can be built into the app for every player.
+6. (Done: the address https://darts-news-default-rtdb.europe-west1.firebasedatabase.app is built into the app.)
    (To try it straight away on your own phone: open the app > Settings > Online play,
    paste the address and tap Save. Your friend would need to do the same until
    the address is built in.)
